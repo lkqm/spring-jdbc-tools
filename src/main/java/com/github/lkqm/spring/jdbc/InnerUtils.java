@@ -45,7 +45,9 @@ public class InnerUtils {
      * 连接成字符串
      */
     public static String join(String separator, List<?> elements) {
-        if(elements == null || elements.size() == 0) return "";
+        if (elements == null || elements.size() == 0) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < elements.size() - 1; i++) {
             sb.append(elements.get(i)).append(separator);
@@ -73,7 +75,7 @@ public class InnerUtils {
         if (Modifier.isStatic(modifiers)) {
             return false;
         }
-        if(field.getName().startsWith("this$")) {
+        if (field.getName().startsWith("this$")) {
             return false;
         }
         return true;
@@ -83,39 +85,77 @@ public class InnerUtils {
      * 创建实例
      */
     public static <T> T createObject(Class<T> clazz) {
-        T obj = null;
+        Constructor<?> constructor = null;
         Constructor<?>[] constructors = clazz.getConstructors();
-        for (Constructor constructor : constructors) {
-            constructor.setAccessible(true);
-            int count = constructor.getParameterTypes().length;
-            if (count == 0) {
-                try {
-                    obj = (T) constructor.newInstance();
-                    break;
-                } catch (InstantiationException e) {
-                    throw new IllegalStateException("对应实体类型没有无参构造函数" + clazz.getName(), e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalStateException("对应实体类型没有无参构造函数" + clazz.getName(), e);
-                } catch (InvocationTargetException e) {
-                    throw new IllegalStateException("对应实体类型没有无参构造函数" + clazz.getName(), e);
-                }
+        for (Constructor one : constructors) {
+            if (0 == one.getParameterTypes().length) {
+                constructor = one;
+                break;
             }
         }
-        if (obj == null) {
-            throw new IllegalStateException("没有无参构造方法" + clazz.getName());
+        if (constructor == null) {
+            constructor = constructors[0];
         }
-        return obj;
+        return createObject(constructor);
     }
 
-    public static void assertArgument(boolean except, String message, Object...args) {
-        if(!except) {
+    private static <T> T createObject(Constructor<?> constructor) {
+        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        Object[] args = getTypeDefaultValues(parameterTypes);
+        try {
+            constructor.setAccessible(true);
+            return (T) constructor.newInstance(args);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * 获得类型的默认值
+     */
+    public static Object[] getTypeDefaultValues(Class<?>[] types) {
+        Object[] values = new Object[types.length];
+        for (int i = 0; i < types.length; i++) {
+            Class<?> type = types[i];
+            values[i] = getTypeDefaultValue(type);
+        }
+        return values;
+    }
+
+    public static Object getTypeDefaultValue(Class type) {
+        if (!type.isPrimitive()) {
+            return null;
+        }
+        if (byte.class == type) {
+            return (byte) 0;
+        } else if (char.class == type) {
+            return '\u0000';
+        } else if (short.class == type) {
+            return (short) 0;
+        } else if (int.class == type) {
+            return 0;
+        } else if (long.class == type) {
+            return 0L;
+        } else if (double.class == type) {
+            return 0D;
+        } else if (float.class == type) {
+            return 0F;
+        } else if (boolean.class == type) {
+            return false;
+        } else {
+            return null;
+        }
+    }
+
+    public static void assertArgument(boolean except, String message, Object... args) {
+        if (!except) {
             String msg = String.format(message, args);
             throw new IllegalArgumentException(msg);
         }
     }
 
-    public static void assertState(boolean except, String message, Object...args) {
-        if(!except) {
+    public static void assertState(boolean except, String message, Object... args) {
+        if (!except) {
             String msg = String.format(message, args);
             throw new IllegalStateException(msg);
         }

@@ -5,12 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 class JdbcTemplateUtilsTest {
 
@@ -29,6 +25,14 @@ class JdbcTemplateUtilsTest {
         assertNotNull(preparedSql);
         assertEquals("insert into user(id, name, create_time) values(?, ?, ?)", preparedSql.sql);
         assertArrayEquals(args, preparedSql.args);
+
+        // 测试: 主键值=null
+        User noneIdUser = new User(null, "Mario Luo", new Date());
+        Object[] noneIdArgs = {noneIdUser.name, noneIdUser.createTime};
+        PreparedSql noneIdPreparedSql = JdbcTemplateUtils.parseInsert(noneIdUser);
+        assertNotNull(noneIdPreparedSql);
+        assertEquals("insert into user(name, create_time) values(?, ?)", noneIdPreparedSql.sql);
+        assertArrayEquals(noneIdArgs, noneIdPreparedSql.args);
     }
 
     @Test

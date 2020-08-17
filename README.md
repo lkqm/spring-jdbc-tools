@@ -22,3 +22,8 @@ Spring-jdbc-template CRUD tools.
     PreparedSql parseQuery(Object id, Class<?> entityClass);
     RowMapper<T> parseQueryRowMapper(Class<T> entityClass);
 ```
+
+# Java Persistent API
+- @Table: custom table name.
+- @Column: custom column name.
+- @Id: identify primary key, default field named 'id'.
