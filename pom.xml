@@ -4,7 +4,7 @@
 
     <groupId>com.github.lkqm</groupId>
     <artifactId>spring-jdbc-template-tools</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>Spring jdbc template tools.</description>
@@ -26,7 +26,7 @@
         <connection>scm:git:https://github.com/lkqm/spring-jdbc-template-tools.git</connection>
         <developerConnection>scm:git:git@github.com:lkqm/spring-jdbc-template-tools.git</developerConnection>
         <url>https://github.com/lkqm/spring-jdbc-template-tools</url>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
