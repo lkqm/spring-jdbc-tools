@@ -1,5 +1,7 @@
 package com.github.lkqm.spring.jdbc;
 
+import java.util.Collection;
+import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,7 +11,9 @@ import org.springframework.jdbc.core.RowMapper;
  *
  * @see #insert(Object)
  * @see #deleteById(Object, Class)
+ * @see #deleteByIds(Collection, Class)
  * @see #findById(Object, Class)
+ * @see #findByIds(Collection, Class)
  * @see #updateById(Object)
  */
 public class JdbcTemplatePlus extends JdbcTemplate {
@@ -35,6 +39,11 @@ public class JdbcTemplatePlus extends JdbcTemplate {
         return this.update(preparedSql.sql, preparedSql.args);
     }
 
+    public int deleteByIds(Collection<?> ids, Class<?> entityClass) {
+        PreparedSql preparedSql = JdbcTemplateUtils.parseDelete(ids, entityClass);
+        return this.update(preparedSql.sql, preparedSql.args);
+    }
+
     public int updateById(Object data) {
         PreparedSql preparedSql = JdbcTemplateUtils.parseUpdate(data);
         return this.update(preparedSql.sql, preparedSql.args);
@@ -44,6 +53,12 @@ public class JdbcTemplatePlus extends JdbcTemplate {
         PreparedSql preparedSql = JdbcTemplateUtils.parseQuery(id, entityClass);
         RowMapper<T> rowMapper = JdbcTemplateUtils.parseQueryRowMapper(entityClass);
         return this.queryForObject(preparedSql.sql, rowMapper, preparedSql.args);
+    }
+
+    public <T> List<T> findByIds(Collection<?> ids, Class<T> entityClass) {
+        PreparedSql preparedSql = JdbcTemplateUtils.parseQuery(ids, entityClass);
+        RowMapper<T> rowMapper = JdbcTemplateUtils.parseQueryRowMapper(entityClass);
+        return this.query(preparedSql.sql, rowMapper, preparedSql.args);
     }
 
 }

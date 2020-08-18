@@ -1,5 +1,6 @@
 package com.github.lkqm.spring.jdbc;
 
+import java.util.Collection;
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -38,6 +39,19 @@ public class JdbcTemplateUtils {
     }
 
     /**
+     * 解析删除语句
+     */
+    public static PreparedSql parseDelete(Collection<?> ids, Class<?> entityClass) {
+        EntityInfo<Object> entityInfo = getEntityInfo(entityClass);
+        String table = entityInfo.getTableName(SNAKE);
+        String idColumn = entityInfo.getIdColumnName(SNAKE);
+        String idReplacers = InnerUtils.join(", ", InnerUtils.fillList("?", ids.size()));
+        String sql = String.format("delete from %s where %s in (%s)", table, idColumn, idReplacers);
+        Object[] args = ids.toArray();
+        return new PreparedSql(sql, args);
+    }
+
+    /**
      * 解析更新语句, 实体null参数不参与更新.
      */
     public static PreparedSql parseUpdate(Object data) {
@@ -65,6 +79,21 @@ public class JdbcTemplateUtils {
 
         String sql = String.format("select %s from %s where %s = ?", columns, table, idColumn);
         Object[] args = {id};
+        return new PreparedSql(sql, args);
+    }
+
+    /**
+     * 解析查询语句
+     */
+    public static PreparedSql parseQuery(Collection<?> ids, Class<?> entityClass) {
+        EntityInfo<Object> entityInfo = getEntityInfo(entityClass);
+        String table = entityInfo.getTableName(SNAKE);
+        String idColumn = entityInfo.getIdColumnName(SNAKE);
+        String columns = entityInfo.getInsertColumnsSqlSnippet(SNAKE);
+        String idReplacers = InnerUtils.join(", ", InnerUtils.fillList("?", ids.size()));
+
+        String sql = String.format("select %s from %s where %s in (%s)", columns, table, idColumn, idReplacers);
+        Object[] args = ids.toArray();
         return new PreparedSql(sql, args);
     }
 

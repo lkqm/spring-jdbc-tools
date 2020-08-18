@@ -9,9 +9,9 @@ Spring-jdbc-template CRUD tools.
 > JdbcTemplatePlus
 ```
     int insert(Object data); 
-    int deleteById(Object id, Class<?> entityClass);
+    int deleteById(Object id, Class<?> entityClass);    // deleteByIds
     int updateById(Object data);
-    T selectById(Object id, Class<T> entityClass);
+    T findById(Object id, Class<T> entityClass);        // findByIds
 ```
 
 > OR JdbcTemplateUtils
