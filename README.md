@@ -1,5 +1,5 @@
-# spring-jdbc-template-tools
-Spring-jdbc-template CRUD tools.
+# spring-jdbc-tools ![Maven Central](https://img.shields.io/maven-central/v/com.github.lkqm/spring-jdbc-tools)
+Spring jdbc tools for curd operations.
 
 # Features
 - Easy CRUD operations.
