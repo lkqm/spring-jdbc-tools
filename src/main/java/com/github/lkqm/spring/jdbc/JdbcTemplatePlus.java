@@ -1,10 +1,21 @@
 package com.github.lkqm.spring.jdbc;
 
+import com.github.lkqm.spring.jdbc.EntityInfo.FieldInfo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
+import org.springframework.dao.TypeMismatchDataAccessException;
+import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 /**
  * 基于JdbcTemplate工具增加CRUD操作.
@@ -31,7 +42,32 @@ public class JdbcTemplatePlus extends JdbcTemplate {
 
     public int insert(Object data) {
         PreparedSql preparedSql = JdbcTemplateUtils.parseInsert(data);
-        return this.update(preparedSql.sql, preparedSql.args);
+        DefaultPreparedStatementCreator psc = new DefaultPreparedStatementCreator(preparedSql.sql, preparedSql.args);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int rows = this.update(psc, keyHolder);
+        if (rows > 0) {
+            setGenerateKey(data, keyHolder);
+        }
+        return rows;
+    }
+
+    private void setGenerateKey(Object data, KeyHolder keyHolder) {
+        EntityInfo<?> entityInfo = JdbcTemplateUtils.parseEntityClass(data.getClass());
+        FieldInfo idFieldInfo = entityInfo.getIdFieldInfo();
+        if (idFieldInfo == null || idFieldInfo.get(data) != null) {
+            return;
+        }
+
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            return;
+        }
+        Object idValue = InnerUtils.convertNumberType(key, idFieldInfo.getType());
+        if (idValue == null) {
+            throw new TypeMismatchDataAccessException(
+                    "Auto generate key can't assigned to id type: " + idFieldInfo.getType().getName());
+        }
+        idFieldInfo.set(data, idValue);
     }
 
     public int deleteById(Object id, Class<?> entityClass) {
@@ -60,5 +96,22 @@ public class JdbcTemplatePlus extends JdbcTemplate {
         RowMapper<T> rowMapper = JdbcTemplateUtils.parseRowMapper(entityClass);
         return this.query(preparedSql.sql, rowMapper, preparedSql.args);
     }
+
+
+    @AllArgsConstructor
+    private static class DefaultPreparedStatementCreator implements PreparedStatementCreator {
+
+        private final String sql;
+        private final Object[] args;
+
+        @Override
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            PreparedStatement ps = con.prepareStatement(sql);
+            PreparedStatementSetter pss = new ArgumentPreparedStatementSetter(args);
+            pss.setValues(ps);
+            return ps;
+        }
+    }
+
 
 }

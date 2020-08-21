@@ -105,6 +105,13 @@ public class JdbcTemplateUtils {
         return new EntityRowMapper<>(entityInfo, SNAKE);
     }
 
+    /**
+     * 解析获得实体类信息
+     */
+    public static <T> EntityInfo<T> parseEntityClass(Class<T> entityClass) {
+        return EntityInfo.newInstance(entityClass);
+    }
+
     private static <T> EntityInfo<T> getEntityInfo(Class entityClass) {
         return EntityInfo.newInstance(entityClass);
     }

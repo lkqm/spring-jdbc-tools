@@ -27,6 +27,7 @@ public class EntityInfo<T> implements Serializable {
     /**
      * 主键字段信息
      */
+    @Getter
     private FieldInfo idFieldInfo;
     /**
      * 所有字段信息

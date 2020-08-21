@@ -1,7 +1,9 @@
 package com.github.lkqm.spring.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,20 @@ class InnerUtilsTest {
     void fillList() {
         List<String> values = InnerUtils.fillList("1", 4);
         assertEquals("1,1,1,1", InnerUtils.join(",", values));
+    }
+
+    @Test
+    void convertNumberType() {
+        Object v1 = InnerUtils.convertNumberType(Integer.valueOf(1), Integer.class);
+        assertEquals(Integer.class, v1.getClass());
+        assertEquals(1, v1);
+
+        Object v3 = InnerUtils.convertNumberType(Integer.valueOf(1), String.class);
+        assertEquals(String.class, v3.getClass());
+        assertEquals("1", v3);
+
+        Object v4 = InnerUtils.convertNumberType(Integer.valueOf(1), BigDecimal.class);
+        assertNull(v4);
     }
 
 }

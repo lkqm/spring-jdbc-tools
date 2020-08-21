@@ -161,4 +161,28 @@ public class InnerUtils {
         }
     }
 
+    /**
+     * 转化类型, 返回null代表不能转换
+     */
+    public static Object convertNumberType(Number key, Class<?> type) {
+        if (type.isAssignableFrom(key.getClass())) {
+            return key;
+        }
+        if (String.class.isAssignableFrom(type)) {
+            return String.valueOf(key.longValue());
+        }
+        if (type == byte.class || type == Byte.class) {
+            return key.byteValue();
+        }
+        if (type == short.class || type == Short.class) {
+            return key.shortValue();
+        }
+        if (type == int.class || type == Integer.class) {
+            return key.intValue();
+        }
+        if (type == long.class || type == Long.class) {
+            return key.longValue();
+        }
+        return null;
+    }
 }

@@ -38,6 +38,7 @@ class JdbcTemplatePlusTest {
         User noneIdUser = new User(null, "LW");
         int noneIdRow = jdbcTemplate.insert(noneIdUser);
         assertTrue(noneIdRow > 0);
+        assertNotNull(noneIdUser.id);
     }
 
     @Test
@@ -86,7 +87,6 @@ class JdbcTemplatePlusTest {
 
     @AllArgsConstructor
     public static class User {
-
         private Integer id;
         private String name;
     }
