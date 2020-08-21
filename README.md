@@ -19,8 +19,8 @@ Spring jdbc tools for curd operations.
     PreparedSql parseInsert(Object data);
     PreparedSql parseDelete(Object id, Class<?> entityClass);
     PreparedSql parseUpdate(Object data);
-    PreparedSql parseQuery(Object id, Class<?> entityClass);
-    RowMapper<T> parseQueryRowMapper(Class<T> entityClass);
+    PreparedSql parseFind(Object id, Class<?> entityClass);
+    RowMapper<T> parseRowMapper(Class<T> entityClass);
 ```
 
 # Java Persistent API

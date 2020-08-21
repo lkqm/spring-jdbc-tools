@@ -71,7 +71,7 @@ public class JdbcTemplateUtils {
     /**
      * 解析查询语句
      */
-    public static PreparedSql parseQuery(Object id, Class<?> entityClass) {
+    public static PreparedSql parseFind(Object id, Class<?> entityClass) {
         EntityInfo<Object> entityInfo = getEntityInfo(entityClass);
         String table = entityInfo.getTableName(SNAKE);
         String idColumn = entityInfo.getIdColumnName(SNAKE);
@@ -85,7 +85,7 @@ public class JdbcTemplateUtils {
     /**
      * 解析查询语句
      */
-    public static PreparedSql parseQuery(Collection<?> ids, Class<?> entityClass) {
+    public static PreparedSql parseFind(Collection<?> ids, Class<?> entityClass) {
         EntityInfo<Object> entityInfo = getEntityInfo(entityClass);
         String table = entityInfo.getTableName(SNAKE);
         String idColumn = entityInfo.getIdColumnName(SNAKE);
@@ -100,7 +100,7 @@ public class JdbcTemplateUtils {
     /**
      * 解析查询映射类
      */
-    public static <T> RowMapper<T> parseQueryRowMapper(Class<T> entityClass) {
+    public static <T> RowMapper<T> parseRowMapper(Class<T> entityClass) {
         EntityInfo<T> entityInfo = getEntityInfo(entityClass);
         return new EntityRowMapper<>(entityInfo, SNAKE);
     }

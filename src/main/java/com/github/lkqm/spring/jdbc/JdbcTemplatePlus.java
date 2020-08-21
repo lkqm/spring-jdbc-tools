@@ -50,14 +50,14 @@ public class JdbcTemplatePlus extends JdbcTemplate {
     }
 
     public <T> T findById(Object id, Class<T> entityClass) {
-        PreparedSql preparedSql = JdbcTemplateUtils.parseQuery(id, entityClass);
-        RowMapper<T> rowMapper = JdbcTemplateUtils.parseQueryRowMapper(entityClass);
+        PreparedSql preparedSql = JdbcTemplateUtils.parseFind(id, entityClass);
+        RowMapper<T> rowMapper = JdbcTemplateUtils.parseRowMapper(entityClass);
         return this.queryForObject(preparedSql.sql, rowMapper, preparedSql.args);
     }
 
     public <T> List<T> findByIds(Collection<?> ids, Class<T> entityClass) {
-        PreparedSql preparedSql = JdbcTemplateUtils.parseQuery(ids, entityClass);
-        RowMapper<T> rowMapper = JdbcTemplateUtils.parseQueryRowMapper(entityClass);
+        PreparedSql preparedSql = JdbcTemplateUtils.parseFind(ids, entityClass);
+        RowMapper<T> rowMapper = JdbcTemplateUtils.parseRowMapper(entityClass);
         return this.query(preparedSql.sql, rowMapper, preparedSql.args);
     }
 

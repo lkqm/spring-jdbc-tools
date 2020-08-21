@@ -55,10 +55,10 @@ class JdbcTemplateUtilsTest {
     }
 
     @Test
-    void parseQuery() {
+    void parseFind() {
         int id = 1;
         Object[] args = {id};
-        PreparedSql preparedSql = JdbcTemplateUtils.parseQuery(id, User.class);
+        PreparedSql preparedSql = JdbcTemplateUtils.parseFind(id, User.class);
         assertNotNull(preparedSql);
         assertEquals("select id, name, create_time from user where id = ?", preparedSql.sql);
         assertArrayEquals(args, preparedSql.args);
