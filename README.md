@@ -1,5 +1,5 @@
 # spring-jdbc-tools ![Maven Central](https://img.shields.io/maven-central/v/com.github.lkqm/spring-jdbc-tools)
-Spring jdbc tools for curd operations.
+Spring jdbc tools for crud operations.
 
 # Features
 - Easy CRUD operations.
